@@ -1,0 +1,33 @@
+{% extends 'users/base.html' %}
+{% load my_tags %}
+{% load static %}
+
+{% block content %}
+<div class="col-12">
+    <form class="row" method="post" enctype="multipart/form-data">
+        <div class="col-6">
+            <div class="card">
+                <img class="card-img-top"
+                     src="{{ object.avatar|mymedia }}"
+                >
+                <div class="card-header">
+                    <h3>
+                        Профиль
+                    </h3>
+                    <h5>
+                        {{ object.email }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-success">
+                        Сохранить
+                    </button>
+                </div>
+                <div class="card-footer"></div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

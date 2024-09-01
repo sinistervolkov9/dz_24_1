@@ -1,0 +1,39 @@
+{% extends 'mailing_app/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h2 class="my-4">Список пользователей</h2>
+    <div class="row">
+        {% for object in object_list %}
+        <div class="col-md-4 mb-4">
+            <div class="card box-shadow">
+                <div class="card-body {% if object.is_active %}bg-light{% else %}bg-danger text-white{% endif %}">
+                    <h5 class="card-title">{{ object.username }}</h5>
+                    <p class="card-text">{{ object.email }}</p>
+                    <p class="card-text">
+                        Статус:
+                        {% if object.is_active %}
+                        <span class="badge badge-success">Активен</span>
+                        {% else %}
+                        <span class="badge badge-secondary">Заблокирован</span>
+                        {% endif %}
+                    </p>
+                    {% if user.is_authenticated and perms.users.can_block_users %}
+                    {% if object != user and not object.is_superuser %}
+                    <a href="{% url 'users:status_user' object.id %}" class="btn btn-sm btn-outline-primary">
+                        {% if object.is_active %}
+                        Заблокировать
+                        {% else %}
+                        Разблокировать
+                        {% endif %}
+                    </a>
+                    {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

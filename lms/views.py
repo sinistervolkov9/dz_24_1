@@ -3,7 +3,8 @@ from .forms import CourseForm, LessonForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Course, Lesson
 from django.urls import reverse_lazy
-from django.shortcuts import get_object_or_404
+from rest_framework import viewsets, generics
+from .serializers import CourseSerializer, LessonSerializer
 
 
 class CourseListView(ListView):
@@ -65,6 +66,11 @@ class CourseDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.request.user == course.user or self.request.user.is_superuser
 
 
+class CourseViewSet(viewsets.ModelViewSet):
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
+
+
 # ----------------------------------------------------------------------------------------------------------------------
 
 class LessonListView(ListView):
@@ -107,3 +113,13 @@ class LessonDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         lesson = self.get_object()
         return self.request.user.is_superuser or lesson.user == self.request.user
+
+
+class LessonListCreateView(generics.ListCreateAPIView):
+    queryset = Lesson.objects.all()
+    serializer_class = LessonSerializer
+
+
+class LessonRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Lesson.objects.all()
+    serializer_class = LessonSerializer

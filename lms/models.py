@@ -1,12 +1,15 @@
 from django.db import models
+from django.conf import settings
 
 NULLABLE = {'blank': True, 'null': True}
 
 
 class Course(models.Model):
-    title = models.CharField(max_length=200)
-    preview = models.ImageField(upload_to='course_previews/', **NULLABLE)
-    description = models.TextField()
+    title = models.CharField(verbose_name='Название', max_length=200)
+    preview = models.ImageField(verbose_name='Картинка', upload_to='course_previews/', **NULLABLE)
+    description = models.TextField(verbose_name='Описание',)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, default=1, on_delete=models.CASCADE, related_name='courses',
+                             verbose_name='Пользователь')
 
     def __str__(self):
         return self.title
@@ -17,11 +20,13 @@ class Course(models.Model):
 
 
 class Lesson(models.Model):
-    title = models.CharField(max_length=200)
-    description = models.TextField()
-    preview = models.ImageField(upload_to='lesson_previews/', **NULLABLE)
-    video_url = models.URLField(max_length=200)
-    course = models.ForeignKey(Course, related_name='lessons', on_delete=models.CASCADE)
+    title = models.CharField(verbose_name='Название', max_length=200)
+    description = models.TextField(verbose_name='Описание',)
+    preview = models.ImageField(verbose_name='Картинка', upload_to='lesson_previews/', **NULLABLE)
+    video_url = models.URLField(verbose_name='Ссылка на видео', max_length=200)
+    course = models.ForeignKey(Course, verbose_name='Курс', related_name='lessons', on_delete=models.CASCADE, **NULLABLE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, default=1, on_delete=models.CASCADE, related_name='lessons',
+                             verbose_name='Пользователь')
 
     def __str__(self):
         return self.title

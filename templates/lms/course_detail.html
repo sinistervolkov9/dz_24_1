@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h2>{{ course.title }}</h2>
+                </div>
+                <div class="card-body">
+                    <p><strong>Название:</strong> {{ course.title }}</p>
+                    <p><strong>Описание:</strong> {{ course.description }}</p>
+                    <p><strong>Автор курса:</strong> {{ course.user.username }}</p>
+                </div>
+                <div class="card-footer">
+
+
+                    <h3 class="mt-4">Уроки</h3>
+                    {% if lessons %}
+                    <ul class="list-group">
+                        {% for lesson in lessons %}
+                        <li class="list-group-item">
+                            <h5>
+                                <a href="{% url 'lms:lesson_detail' pk=lesson.pk %}">{{ lesson.title }}</a>
+                            </h5>
+                            <p>{{ lesson.description|truncatewords:20 }}</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p>В этом курсе пока нет уроков.</p>
+                    {% endif %}
+                    {% if user.is_authenticated %}
+                    {% if user == course.user or user.is_staff %}
+                    <div class="mt-3">
+                        <a href="{% url 'lms:course_update' pk=course.pk %}" class="btn btn-warning">Изменить курс</a>
+                        <a href="{% url 'lms:course_delete' pk=course.pk %}" class="btn btn-danger">Удалить</a>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

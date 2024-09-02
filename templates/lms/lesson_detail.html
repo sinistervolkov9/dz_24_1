@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h2>{{ lesson.title }}</h2>
+                </div>
+                <div class="card-body">
+                    <p><strong>Название:</strong> {{ lesson.title }}</p>
+                    <p><strong>Описание:</strong> {{ lesson.description }}</p>
+                    <p><strong>Автор урока:</strong> {{ lesson.user.username }}</p>
+                </div>
+                <div class="card-footer">
+                    {% if user.is_authenticated %}
+                    {% if user == course.user or user.is_staff %}
+                    <div class="mt-3">
+                        <a href="{% url 'lms:lesson_update' pk=object.id %}" class="btn btn-warning">Изменить</a>
+                        <a href="{% url 'lms:lesson_delete' pk=object.id %}" class="btn btn-danger">Удалить</a>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

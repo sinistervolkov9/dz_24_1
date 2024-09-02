@@ -30,7 +30,7 @@ class UserForm(StyleFormMixin, UserChangeForm):
 
     class Meta:
         model = User
-        fields = ('username', 'country', 'phone', 'avatar')
+        fields = ('username', 'city', 'phone', 'avatar')
 
     def __init__(self, *args, **kwargs):
         """Скрытие поля password"""

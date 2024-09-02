@@ -11,7 +11,6 @@ urlpatterns = [
     path('register/', RegisterUserView.as_view(), name='register'),
     path('verify/', VerifyUserView.as_view(), name='verify'),
 
-    # path('profile/genpassword', generate_password, name='genpassword'),
     path('profile/', UserUpdateView.as_view(), name='profile'),
     path('status_user/<int:pk>', status_user, name='status_user'),
 ]

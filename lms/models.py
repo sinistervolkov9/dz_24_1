@@ -10,6 +10,7 @@ class Course(models.Model):
     description = models.TextField(verbose_name='Описание',)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, default=1, on_delete=models.CASCADE, related_name='courses',
                              verbose_name='Пользователь')
+    lesson = models.ManyToManyField('Lesson', verbose_name='Уроки', related_name='course_lessons')
 
     def __str__(self):
         return self.title
@@ -24,7 +25,6 @@ class Lesson(models.Model):
     description = models.TextField(verbose_name='Описание',)
     preview = models.ImageField(verbose_name='Картинка', upload_to='lesson_previews/', **NULLABLE)
     video_url = models.URLField(verbose_name='Ссылка на видео', max_length=200)
-    course = models.ForeignKey(Course, verbose_name='Курс', related_name='lessons', on_delete=models.CASCADE, **NULLABLE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, default=1, on_delete=models.CASCADE, related_name='lessons',
                              verbose_name='Пользователь')
 

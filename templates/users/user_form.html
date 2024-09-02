@@ -1,12 +1,15 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load my_tags %}
 
 {% block content %}
 <div class="col-12">
     <form class="row" method="post" enctype="multipart/form-data">
         <div class="col-6">
             <div class="card">
-
+                <img class="card-img-top"
+                     src="{{ object.avatar|mymedia }}"
+                >
                 <div class="card-header">
                     <h3>
                         Профиль

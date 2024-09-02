@@ -20,7 +20,7 @@ class CourseDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['lessons'] = self.object.lessons.all()
+        context['lessons'] = self.object.lesson.all()
         return context
 
 
@@ -43,9 +43,11 @@ class CourseUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     success_url = reverse_lazy('lms:course_list')
 
     def form_valid(self, form):
+        print('fv')
         form.instance.user = self.request.user
+        # form.save()
         response = super().form_valid(form)
-        form.save_m2m()
+
         return response
 
     def get_success_url(self):

@@ -2,9 +2,13 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from .forms import CourseForm, LessonForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Course, Lesson
+from users.models import Payment
 from django.urls import reverse_lazy
 from rest_framework import viewsets, generics
+from rest_framework.filters import OrderingFilter
 from .serializers import CourseSerializer, LessonSerializer
+from django_filters.rest_framework import DjangoFilterBackend
+from .serializers import PaymentSerializer
 
 
 class CourseListView(ListView):
@@ -125,3 +129,19 @@ class LessonListCreateView(generics.ListCreateAPIView):
 class LessonRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
+
+
+class LessonViewSet(viewsets.ModelViewSet):
+    queryset = Course.objects.all()
+    serializer_class = LessonSerializer
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+class PaymentViewSet(viewsets.ModelViewSet):
+    queryset = Payment.objects.all()
+    serializer_class = PaymentSerializer
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_fields = ['course', 'lesson', 'payment_method']
+    ordering_fields = ['payment_date']
+    ordering = ['-payment_date']

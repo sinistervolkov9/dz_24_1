@@ -1,0 +1,61 @@
+[
+  {
+    "model": "lms.course",
+    "pk": 1,
+    "fields": {
+      "title": "Курс 1",
+      "preview": "",
+      "description": "Описание",
+      "user": 1,
+      "lesson": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "lms.course",
+    "pk": 2,
+    "fields": {
+      "title": "Курс postman",
+      "preview": "",
+      "description": "Описание",
+      "user": 1,
+      "lesson": []
+    }
+  },
+  {
+    "model": "lms.course",
+    "pk": 3,
+    "fields": {
+      "title": "Курс postman 2",
+      "preview": "",
+      "description": "Описание 2",
+      "user": 1,
+      "lesson": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "lms.lesson",
+    "pk": 2,
+    "fields": {
+      "title": "Урок 2",
+      "description": "1232134",
+      "preview": "",
+      "video_url": "https://www.youtube.com/",
+      "user": 1
+    }
+  },
+  {
+    "model": "lms.lesson",
+    "pk": 3,
+    "fields": {
+      "title": "Урок 3",
+      "description": "афрвадлыф",
+      "preview": "",
+      "video_url": "https://www.youtube.com/",
+      "user": 1
+    }
+  }
+]

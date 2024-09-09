@@ -13,6 +13,14 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth import logout
+from rest_framework import viewsets, permissions
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly
+from django.contrib.auth import get_user_model
+from .serializers import UserSerializer
+# from .serializers import RegisterUserSerializer
+from rest_framework import generics
+from rest_framework.permissions import AllowAny
+from .permission import IsModerOrAuthor
 
 
 class UserLoginView(LoginView):
@@ -110,60 +118,14 @@ def status_user(request, pk):
             user.save()
         return redirect(reverse('users:user_list'))
 
-# class RegisterUserView(SuccessMessageMixin, CreateView):
-#     model = User
-#     form_class = RegisterForm
-#     success_url = reverse_lazy('users:login')
-#     template_name = 'users/register.html'
-#
-#     def get_success_message(self, cleaned_data):
-#         return f'Вам на почту отправлен код. Введите его для завершения регистрации'
-#
-#     def form_valid(self, form):
-#         """Верификация по ссылке через почту"""
-#         new_user = form.save()
-#         code = ''.join(random.sample('0123456789', 4))
-#         new_user.verify_code = code
-#         new_user.is_active = False
-#         send_mail(
-#             'Верификация',
-#             f'Перейдите по ссылке для верификации: '
-#             f'http://127.0.0.1:8000/users/verification/{code}',
-#             EMAIL_HOST_USER,
-#             [new_user.email]
-#         )
-#         return super().form_valid(form)
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = get_user_model().objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthorOrReadOnly]  # and; в одном лице
 
 
-# def verification(request, code):
-#     """Контроллер подтверждения верификации"""
-#     user = User.objects.get(verify_code=code)
-#     user.is_active = True
-#     user.save()
-#     return redirect(reverse('users:login'))
-
-
-# class ProfileView(UpdateView):
-#     model = User
-#     form_class = UserProfileForm
-#     success_url = reverse_lazy('user:profile')
-#     extra_context = {'title': 'Профиль'}
-#
-#     def get_object(self, queryset=None):
-#         return self.request.user
-
-# def generate_password(request):
-#     """Контроллер смены пароля и отправка сгенерированного пароля на почту"""
-#     new_password = User.objects.make_random_password()
-#     request.user.set_password(new_password)
-#     request.user.save()
-#     send_mail(
-#         'Смена пароля',
-#         f'Ваш новый пароль для авторизации: {new_password}',
-#         EMAIL_HOST_USER,
-#         [request.user.email]
-#     )
-#     messages.success(request,
-#                      'Вам на почту отправлено письмо '
-#                      'с новым паролем для вашего аккаунта')
-#     return redirect(reverse('users:login'))
+class UserCreateView(generics.CreateAPIView):
+    queryset = get_user_model().objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [AllowAny]

@@ -18,6 +18,15 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from rest_framework.routers import DefaultRouter
+from lms.views import CourseViewSet, LessonViewSet, PaymentViewSet
+from users.views import UserViewSet
+
+router = DefaultRouter()
+router.register(r'courses', CourseViewSet, basename='course')
+router.register(r'lessons', LessonViewSet, basename='lesson')
+router.register(r'payments', PaymentViewSet, basename='payment')
+router.register(r'users', UserViewSet, basename='user')
 
 urlpatterns = [
                   path('admin/', admin.site.urls),
@@ -25,4 +34,5 @@ urlpatterns = [
                   path('users/', include('users.urls')),
                   path('lms/', include('lms.urls')),
 
+                  path('api/', include(router.urls)),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

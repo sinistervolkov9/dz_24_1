@@ -1,4 +1,4 @@
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import BasePermission, SAFE_METHODS
 
 
 # class IsModer(BasePermission):
@@ -28,4 +28,4 @@ class IsModerOrAuthor(BasePermission):
                 return False
             return True
 
-        return obj.author == request.user or request.method in SAFE_METHODS
+        return obj.user == request.user or request.method in SAFE_METHODS

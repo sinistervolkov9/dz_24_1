@@ -65,12 +65,23 @@ class User(AbstractUser):
 #     link = models.URLField(max_length=400, blank=True, null=True, verbose_name='Ссылка на оплату')
 
 class Payment(models.Model):
+    STATUS_PENDING = 'pending'
+    STATUS_SUCCESS = 'success'
+    STATUS_FAILED = 'failed'
+
+    STATUS_CHOICES = [
+        (STATUS_PENDING, 'Ожидание'),
+        (STATUS_SUCCESS, 'Оплачено'),
+        (STATUS_FAILED, 'Ошибка'),
+    ]
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='payment', on_delete=models.CASCADE, verbose_name='Пользователь')
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='payment_course', verbose_name='Оплаченный курс', blank=True, null=True)
     stripe_product_id = models.CharField(max_length=255, default='default_product_id')
     stripe_price_id = models.CharField(max_length=255, default='default_value')
     stripe_session_id = models.CharField(max_length=255, default='default_session_id')
     status = models.CharField(max_length=50, default='pending')
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default=STATUS_PENDING)
     # amount = models.PositiveIntegerField(verbose_name='Сумма оплаты', default=0)
 
     def __str__(self):

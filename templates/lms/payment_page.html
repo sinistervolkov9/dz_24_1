@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<h1>Оплата курса: {{ course.title }}</h1>
+<p>Стоимость: {{ course.price }} долл.</p>
+
+{% if payment %}
+<p>Статус оплаты: {{ payment.status }}</p>
+{% if payment.status == 'pending' %}
+<a href="{% url 'lms:payment_page' pk=course.id %}">Перейти к оплате</a>
+{% else %}
+<p>Оплата уже произведена!</p>
+{% endif %}
+{% else %}
+<p>Платеж еще не был создан. Пожалуйста, попробуйте еще раз.</p>
+{% endif %}
+
+{% endblock %}

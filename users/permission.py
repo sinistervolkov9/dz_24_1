@@ -1,17 +1,6 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
+from users.models import Payment
 
-
-# class IsModer(BasePermission):
-#     def has_permission(self, request, view):
-#         print(request.method)
-#         return request.user.groups.filter(name='Модератор').exists() and request.method not in ['DELETE', 'POST']
-#
-#
-# class IsAuthorOrReadOnly(BasePermission):
-#     def has_object_permission(self, request, view, obj):
-#         if request.method in ['GET', 'HEAD', 'OPTIONS']:
-#             return True
-#         return obj.user == request.user
 
 class IsModerOrAuthor(BasePermission):
     def has_permission(self, request, view):
@@ -33,4 +22,5 @@ class IsModerOrAuthor(BasePermission):
 
 class IsPaymet(BasePermission):
     def has_object_permission(self, request, view, obj):
-        return request.user.is_authenticated and obj.payment_course.filter(user=request.user, status='pending').exists()
+        # return request.user.is_authenticated and obj.payment_course.filter(user=request.user, status='pending').exists()
+        return request.user.is_authenticated and obj.payment_course.filter(user=request.user, status=Payment.STATUS_SUCCESS).exists()

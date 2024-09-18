@@ -15,7 +15,42 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from .paginators import Pagination
+# from django.shortcuts import redirect
+# from django.contrib import messages
+# from django.conf import settings
+# import stripe
+#
+# stripe.api_key = settings.STRIPE_SECRET_KEY
 
+
+# class PaymentPageView(DetailView):
+#     model = Course
+#     template_name = 'lms/payment_page.html'
+#     context_object_name = 'course'
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         course = self.get_object()
+#
+#         price_id = 'your_stripe_price_id_here'
+#         session = stripe.checkout.Session.create(
+#             payment_method_types=['card'],
+#             line_items=[
+#                 {
+#                     'price': price_id,
+#                     'quantity': 1,
+#                 },
+#             ],
+#             mode='payment',
+#             success_url=settings.SUCCESS_URL,
+#             cancel_url=settings.CANCEL_URL,
+#         )
+#
+#         context['checkout_session_id'] = session.id
+#         return context
+
+
+# ----------------------------------------------------------------------------------------------------------------------
 
 class CourseListView(ListView):
     model = Course
@@ -27,6 +62,17 @@ class CourseDetailView(DetailView):
     model = Course
     template_name = 'lms/course_detail.html'
     context_object_name = 'course'
+
+    # def get(self, request, *args, **kwargs):
+    #     course = self.get_object()
+    #
+    #     if not Payment.objects.filter(user=request.user, course=course, status='success').exists():
+    #         messages.error(request, 'Вы не оплатили этот курс. Пожалуйста, оплатите для доступа.')
+    #         print('NO')
+    #         print(course.id)
+    #         return redirect('payment_page', course_id=course.id)
+    #
+    #     return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

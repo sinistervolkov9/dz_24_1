@@ -3,31 +3,24 @@ from django.core.mail import send_mail
 from django.views.generic import CreateView, UpdateView, ListView, FormView
 from .models import User, Payment, Course
 from .forms import RegisterForm, UserForm, ListUserForm, VerifyForm
-# from .forms import UserProfileForm
 from django.urls import reverse_lazy, reverse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 import random
 from config.settings import EMAIL_HOST_USER
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.contrib.auth import logout
+from django.contrib.auth import logout, get_user_model
 from rest_framework import viewsets, permissions, generics
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly, AllowAny
-from django.contrib.auth import get_user_model
 from .serializers import UserSerializer, PaymentSerializer
-# from .serializers import RegisterUserSerializer
-# from .permission import IsModerOrAuthor
-# from .services import create_sprite_price, create_stripe_session
-from django.shortcuts import get_object_or_404
 from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .services import create_stripe_product, create_stripe_price, create_checkout_session
-
-
-# from services import convert_rub_to_dollars
+import stripe
+from django.http import JsonResponse
 
 
 class UserLoginView(LoginView):
@@ -140,19 +133,6 @@ class UserCreateView(generics.CreateAPIView):
 
 # ----------------------------------------------------------------------------------------------------------------------
 
-# class PaymentCreateView(generics.CreateAPIView):
-#     queryset = Payment.objects.all()
-#     serializer_class = PaymentSerializer
-#
-#     def perform_create(self, serializer):
-#         payment = serializer.save(user=self.request.user)
-#         # amount_in_dollars = convert_rub_to_dollars(paymet.amount)
-#         price = create_sprite_price(payment)
-#         session_id, payment_link = create_stripe_session(price)
-#         payment.session_id = session_id
-#         payment.link = payment_link
-#         payment.save()
-
 
 class CreatePaymentView(APIView):
     def post(self, request, course_id):
@@ -180,3 +160,17 @@ class CreatePaymentView(APIView):
         payment.save()
 
         return Response({'checkout_url': checkout_session['url']})
+
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
+
+
+def check_payment_status(request, session_id):
+    payment = get_object_or_404(Payment, stripe_session_id=session_id)
+    session = stripe.checkout.Session.retrieve(session_id)
+
+    if session['payment_status'] == 'paid':
+        payment.status = Payment.STATUS_SUCCESS
+        payment.save()
+
+    return JsonResponse({'status': payment.status})

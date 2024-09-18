@@ -5,7 +5,7 @@ from .views import (
     LessonListView, LessonDetailView, LessonCreateView, LessonUpdateView, LessonDeleteView,
     LessonListCreateView, LessonRetrieveUpdateDestroyView,
     CourseViewSet, LessonViewSet, PaymentViewSet,
-    SubscriptionView
+    SubscriptionView,
 )
 from rest_framework.routers import DefaultRouter
 

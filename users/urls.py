@@ -1,7 +1,7 @@
 from django.urls import path, include
 from .apps import UsersConfig
 from .views import UserLoginView, UserLogoutView, UserUpdateView, UserListView, status_user, RegisterUserView, \
-    VerifyUserView, CreatePaymentView
+    VerifyUserView, CreatePaymentView, check_payment_status
 from rest_framework.routers import DefaultRouter
 from .views import UserViewSet, UserCreateView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
@@ -28,6 +28,6 @@ urlpatterns = [
     path('auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
-    # path('payment/', PaymentCreateView.as_view(), name='payment'),
     path('courses/<int:course_id>/create-payment/', CreatePaymentView.as_view(), name='create_payment'),
+    path('check-payment-status/<str:session_id>/', check_payment_status, name='check-payment-status'),
 ]

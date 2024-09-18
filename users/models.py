@@ -53,16 +53,28 @@ class User(AbstractUser):
         ]
 
 
+# class Payment(models.Model):
+#     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Пользователь')
+#     payment_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата оплаты')
+#     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Оплаченный курс', blank=True, null=True)
+#     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, verbose_name='Оплаченный урок', blank=True, null=True)
+#     # amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Сумма оплаты')
+#     amount = models.PositiveIntegerField(verbose_name='Сумма оплаты')
+#     payment_method = models.CharField(max_length=10, choices=PAYMENT_METHODS, verbose_name='Способ оплаты', **NULLABLE)
+#     session_id = models.CharField(max_length=255, blank=True, null=True, verbose_name='ID сессии')
+#     link = models.URLField(max_length=400, blank=True, null=True, verbose_name='Ссылка на оплату')
+
 class Payment(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Пользователь')
-    payment_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата оплаты')
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Оплаченный курс', blank=True, null=True)
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, verbose_name='Оплаченный урок', blank=True, null=True)
-    amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Сумма оплаты')
-    payment_method = models.CharField(max_length=10, choices=PAYMENT_METHODS, verbose_name='Способ оплаты')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='payment', on_delete=models.CASCADE, verbose_name='Пользователь')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='payment_course', verbose_name='Оплаченный курс', blank=True, null=True)
+    stripe_product_id = models.CharField(max_length=255, default='default_product_id')
+    stripe_price_id = models.CharField(max_length=255, default='default_value')
+    stripe_session_id = models.CharField(max_length=255, default='default_session_id')
+    status = models.CharField(max_length=50, default='pending')
+    # amount = models.PositiveIntegerField(verbose_name='Сумма оплаты', default=0)
 
     def __str__(self):
-        return f'Платеж от {self.user.email} на сумму {self.amount}'
+        return f'Платеж от {self.user.email} на сумму {self.course.price}'
 
     class Meta:
         verbose_name = 'Платеж'

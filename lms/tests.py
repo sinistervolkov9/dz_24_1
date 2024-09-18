@@ -17,7 +17,7 @@ class LessonCRUDTests(APITestCase):
         cls.lesson_data = {
             "title": "Test Lesson",
             "description": "Lesson description",
-            "course": cls.course.id
+            "video_url": "https://www.youtube.com/watch?v=Lqrdps0doSo&t=1524s&ab_channel=BobbyNsenga"
         }
 
     def setUp(self):
@@ -35,7 +35,7 @@ class LessonCRUDTests(APITestCase):
     def test_update_lesson(self):
         lesson = Lesson.objects.create(title="Old Lesson", user=self.user)
         updated_data = {"title": "Updated Lesson"}
-        response = self.client.put(reverse('api:lesson-detail', args=[lesson.id]), updated_data)
+        response = self.client.patch(reverse('api:lesson-detail', args=[lesson.id]), updated_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Lesson.objects.get(id=lesson.id).title, "Updated Lesson")
 

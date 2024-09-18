@@ -12,6 +12,8 @@ class Course(models.Model):
                              verbose_name='Пользователь')
     lesson = models.ManyToManyField('Lesson', verbose_name='Уроки', related_name='course_lessons')
 
+    price = models.PositiveIntegerField(verbose_name='Стоимость курса', default=0)
+
     def __str__(self):
         return self.title
 

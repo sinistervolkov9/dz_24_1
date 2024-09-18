@@ -10,7 +10,7 @@ from .serializers import CourseSerializer, LessonSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from .serializers import PaymentSerializer
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
-from users.permission import IsModerOrAuthor
+from users.permission import IsModerOrAuthor, IsPaymet
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
@@ -84,8 +84,10 @@ class CourseViewSet(viewsets.ModelViewSet):
     pagination_class = Pagination
 
     def get_permissions(self):
-        if self.action in ['list', 'retrieve']:
+        if self.action in ['list']:
             permission_classes = [IsAuthenticatedOrReadOnly]
+        elif self.action in ['retrieve']:
+            permission_classes = [IsAuthenticatedOrReadOnly, IsPaymet]
         elif self.action in ['update', 'partial_update']:
             permission_classes = [IsAuthenticated, IsModerOrAuthor]
         elif self.action == 'destroy':

@@ -29,3 +29,8 @@ class IsModerOrAuthor(BasePermission):
             return True
 
         return obj.user == request.user or request.method in SAFE_METHODS
+
+
+class IsPaymet(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return request.user.is_authenticated and obj.payment_course.filter(user=request.user, status='pending').exists()

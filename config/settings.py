@@ -34,6 +34,9 @@ INSTALLED_APPS = [
     'lms',
     'home_app',
     'rest_framework_simplejwt',
+
+    'drf_yasg',
+    'drf_spectacular',
 ]
 
 REST_FRAMEWORK = {
@@ -52,6 +55,14 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'DZ 26.1',
+    'DESCRIPTION': 'Description of dz 26.1',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
 }
 
 SIMPLE_JWT = {
@@ -185,3 +196,9 @@ if CACHE_ENABLED:
             'LOCATION': os.getenv('LOCATION'),
         }
     }
+
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
+STRIPE_PUBLIC_KEY = 'pk_test_51Q0PFRRt2znGkXkvEv3Lbm356V6buSQJxE6AfwL7T4yM1a0rkXMt7qzNOhavSx1vGMAFSLx75p9Ch8kXX2WU4Hv500c9JVDS0J'
+
+SUCCESS_URL = 'http://127.0.0.1:8000/'
+CANCEL_URL = 'http://127.0.0.1:8000/'

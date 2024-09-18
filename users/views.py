@@ -1,7 +1,7 @@
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.mail import send_mail
 from django.views.generic import CreateView, UpdateView, ListView, FormView
-from .models import User
+from .models import User, Payment, Course
 from .forms import RegisterForm, UserForm, ListUserForm, VerifyForm
 # from .forms import UserProfileForm
 from django.urls import reverse_lazy, reverse
@@ -13,14 +13,21 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth import logout
-from rest_framework import viewsets, permissions
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly
+from rest_framework import viewsets, permissions, generics
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly, AllowAny
 from django.contrib.auth import get_user_model
-from .serializers import UserSerializer
+from .serializers import UserSerializer, PaymentSerializer
 # from .serializers import RegisterUserSerializer
-from rest_framework import generics
-from rest_framework.permissions import AllowAny
-from .permission import IsModerOrAuthor
+# from .permission import IsModerOrAuthor
+# from .services import create_sprite_price, create_stripe_session
+from django.shortcuts import get_object_or_404
+from django.conf import settings
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .services import create_stripe_product, create_stripe_price, create_checkout_session
+
+
+# from services import convert_rub_to_dollars
 
 
 class UserLoginView(LoginView):
@@ -129,3 +136,47 @@ class UserCreateView(generics.CreateAPIView):
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+# class PaymentCreateView(generics.CreateAPIView):
+#     queryset = Payment.objects.all()
+#     serializer_class = PaymentSerializer
+#
+#     def perform_create(self, serializer):
+#         payment = serializer.save(user=self.request.user)
+#         # amount_in_dollars = convert_rub_to_dollars(paymet.amount)
+#         price = create_sprite_price(payment)
+#         session_id, payment_link = create_stripe_session(price)
+#         payment.session_id = session_id
+#         payment.link = payment_link
+#         payment.save()
+
+
+class CreatePaymentView(APIView):
+    def post(self, request, course_id):
+        user = request.user
+
+        course = get_object_or_404(Course, id=course_id)
+
+        stripe_product = create_stripe_product(course.title)
+
+        stripe_price = create_stripe_price(stripe_product['id'], int(course.price * 100))
+
+        checkout_session = create_checkout_session(
+            price_id=stripe_price['id'],
+            success_url=settings.SUCCESS_URL,
+            cancel_url=settings.CANCEL_URL,
+        )
+
+        payment = Payment.objects.create(
+            course=course,
+            stripe_product_id=stripe_product['id'],
+            stripe_price_id=stripe_price['id'],
+            stripe_session_id=checkout_session['id'],
+            user=user,
+        )
+        payment.save()
+
+        return Response({'checkout_url': checkout_session['url']})

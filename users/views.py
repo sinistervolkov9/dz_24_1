@@ -13,7 +13,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMix
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth import logout, get_user_model
 from rest_framework import viewsets, permissions, generics
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly, AllowAny
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
 from .serializers import UserSerializer, PaymentSerializer
 from django.conf import settings
 from rest_framework.views import APIView
@@ -122,7 +122,7 @@ def status_user(request, pk):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAuthorOrReadOnly]  # and; в одном лице
+    permission_classes = [IsAuthenticatedOrReadOnly]  # and; в одном лице
 
 
 class UserCreateView(generics.CreateAPIView):

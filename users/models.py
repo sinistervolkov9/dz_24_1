@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 import random
-from lms.models import Course, Lesson
+from lms.models import Course
 
 random_code = ''.join(random.sample('0123456789', 6))
 NULLABLE = {'blank': True, 'null': True}
@@ -80,9 +80,10 @@ class Payment(models.Model):
     stripe_product_id = models.CharField(max_length=255, default='default_product_id')
     stripe_price_id = models.CharField(max_length=255, default='default_value')
     stripe_session_id = models.CharField(max_length=255, default='default_session_id')
-    status = models.CharField(max_length=50, default='pending')
+    # status = models.CharField(max_length=50, default='pending')
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default=STATUS_PENDING)
     # amount = models.PositiveIntegerField(verbose_name='Сумма оплаты', default=0)
+    # payment_date
 
     def __str__(self):
         return f'Платеж от {self.user.email} на сумму {self.course.price}'

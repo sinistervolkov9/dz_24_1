@@ -55,7 +55,8 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    # 'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
 }
 
 SPECTACULAR_SETTINGS = {
@@ -97,6 +98,11 @@ TEMPLATES = [
         },
     },
 ]
+
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': False,  # Отключение использования сессий для API
+    'JSON_EDITOR': True,
+}
 
 WSGI_APPLICATION = 'config.wsgi.application'
 

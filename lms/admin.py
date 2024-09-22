@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Course, Lesson
+from .models import Course, Lesson, Subscription
 
 
 # class LessonInline(admin.TabularInline):
@@ -14,3 +14,4 @@ class CourseAdmin(admin.ModelAdmin):
 
 admin.site.register(Course, CourseAdmin)
 admin.site.register(Lesson)
+admin.site.register(Subscription)

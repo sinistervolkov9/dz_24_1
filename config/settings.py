@@ -2,6 +2,7 @@ import os
 from datetime import timedelta
 from pathlib import Path
 from dotenv import load_dotenv
+from celery.schedules import crontab
 
 load_dotenv()
 
@@ -37,6 +38,8 @@ INSTALLED_APPS = [
 
     'drf_yasg',
     'drf_spectacular',
+
+    'django_celery_beat',
 ]
 
 REST_FRAMEWORK = {
@@ -208,3 +211,19 @@ STRIPE_PUBLIC_KEY = 'pk_test_51Q0PFRRt2znGkXkvEv3Lbm356V6buSQJxE6AfwL7T4yM1a0rkX
 
 SUCCESS_URL = 'http://127.0.0.1:8000/'
 CANCEL_URL = 'http://127.0.0.1:8000/'
+
+CELERY_BROKER_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
+
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_ENABLE_UTC = True
+CELERY_TIMEZONE = 'Europe/Moscow'
+
+CELERY_BEAT_SCHEDULE = {
+    'deactivate_user': {
+        'task': 'users.tasks.deactivate_user',
+        'schedule': timedelta(days=1),  # Расписание выполнения задачи
+    }
+}

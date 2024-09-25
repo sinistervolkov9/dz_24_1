@@ -15,7 +15,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from .paginators import Pagination
-from .send_mails_service import send_update_mail
+from .tasks import send_update_mail_task
+# from .send_mails_service import send_update_mail
 # from django.shortcuts import redirect
 # from django.contrib import messages
 # from django.conf import settings
@@ -100,15 +101,17 @@ class CourseUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     success_url = reverse_lazy('lms:course_list')
 
     def form_valid(self, form):
-        print('fv')
         form.instance.user = self.request.user
         # form.save()
         response = super().form_valid(form)
 
+        send_update_mail_task.delay(self.object.pk)
+
         return response
 
     def get_success_url(self):
-        send_update_mail(self.object)
+        # send_update_mail(self.object)
+        # send_update_mail_task.delay(self.object.pk)
         return reverse_lazy('lms:course_detail', kwargs={'pk': self.object.pk})
 
     def test_func(self):

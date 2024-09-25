@@ -225,5 +225,9 @@ CELERY_BEAT_SCHEDULE = {
     'deactivate_user': {
         'task': 'users.tasks.deactivate_user',
         'schedule': timedelta(days=1),  # Расписание выполнения задачи
-    }
+    },
+    # 'send_update_mail_task': {
+    #     'task': 'lms.tasks.send_update_mail_task',
+    #     'schedule': timedelta(days=1),  # Расписание выполнения задачи
+    # },
 }

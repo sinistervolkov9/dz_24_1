@@ -115,11 +115,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('NAME'),
-        'USER': os.getenv('USER'),
-        'PASSWORD': os.getenv('PASSWORD'),
-        'HOST': os.getenv('HOST'),
-        'PORT': os.getenv('PORT'),
+        'NAME': 'django_db',
+        'USER': 'django_user',
+        'PASSWORD': 'django_password',
+        'HOST': 'db',
+        'PORT': '5432',
     }
 }
 
@@ -212,8 +212,8 @@ STRIPE_PUBLIC_KEY = 'pk_test_51Q0PFRRt2znGkXkvEv3Lbm356V6buSQJxE6AfwL7T4yM1a0rkX
 SUCCESS_URL = 'http://127.0.0.1:8000/'
 CANCEL_URL = 'http://127.0.0.1:8000/'
 
-CELERY_BROKER_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
-CELERY_RESULT_BACKEND = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
+CELERY_BROKER_URL = os.environ.get('REDIS_URL', 'redis://redis:6379/0')
+CELERY_RESULT_BACKEND = os.environ.get('REDIS_URL', 'redis://redis:6379/0')
 
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'

@@ -43,6 +43,8 @@ class Subscription(models.Model):
     course = models.ForeignKey('lms.Course', on_delete=models.CASCADE, related_name='subscriptions', verbose_name='Курс')
 
     class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
         unique_together = ('user', 'course')
 
     def __str__(self):
